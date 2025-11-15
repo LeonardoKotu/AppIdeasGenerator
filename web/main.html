@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фестивальный планировщик</title>
+    <link rel="stylesheet" href="main_styles.css">
+</head>
+<body>
+    <!-- Переключатель темы -->
+    <div class="theme-toggle">
+        <button class="theme-toggle-btn" id="themeToggle">
+            <span class="theme-icon">🌙</span>
+            <span class="theme-text">Тёмная тема</span>
+        </button>
+    </div>
+
+    <header>
+        <div class="container">
+            <h1>Фестивальный планировщик</h1>
+            <p class="subtitle">Оптимизируйте ваше время на фестивале</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="app-container">
+            <div class="events-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">События фестиваля</h2>
+                    <div class="selected-count" id="selectedCount">0 событий</div>
+                </div>
+                
+                <div class="control-buttons">
+                    <button class="control-button" id="groupPlanBtn">
+                        Групповой режим
+                    </button>
+                    <button class="control-button" id="liveEditBtn">
+                        Режим фестиваля
+                    </button>
+                </div>
+                
+                <div class="day-selector">
+                    <button class="day-btn active" data-day="1">День 1</button>
+                    <button class="day-btn" data-day="2">День 2</button>
+                    <button class="day-btn" data-day="3">День 3</button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Поиск событий...">
+                </div>
+                
+                <div class="events-list" id="eventsList"></div>
+                
+                <div class="selected-events">
+                    <div class="selected-header">
+                        <h3 class="selected-title">Выбранные события</h3>
+                        <button class="clear-btn" id="clearBtn">Очистить</button>
+                    </div>
+                    <div class="selected-list" id="selectedList"></div>
+                    <div class="conflict-warning" id="conflictWarning">
+                        ⚠️ Обнаружены временные конфликты
+                    </div>
+                    <button class="generate-btn" id="generateBtn">
+                        Сгенерировать маршруты
+                    </button>
+                </div>
+            </div>
+            
+            <div class="schedule-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Персонализированные маршруты</h2>
+                    <div class="schedule-stats" id="scheduleStats"></div>
+                </div>
+                
+                <div class="schedule-tabs" id="scheduleTabs">
+                    <div class="schedule-tab active" data-schedule="0">
+                        Маршрут 1
+                    </div>
+                    <div class="schedule-tab" data-schedule="1">
+                        Маршрут 2
+                    </div>
+                    <div class="schedule-tab" data-schedule="2">
+                        Маршрут 3
+                    </div>
+                </div>
+                
+                <div class="schedule-view" id="scheduleView">
+                    <div class="empty-state">
+                        <div class="empty-icon">🗺️</div>
+                        <h3>Создайте ваш первый маршрут</h3>
+                        <p>Выберите события и нажмите "Сгенерировать маршруты"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно группового планирования -->
+    <div id="groupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Групповое планирование</h3>
+                <button class="close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="group-info">
+                    <p>Каждый участник выбирает события, которые хочет посетить. Система построит общие маршруты.</p>
+                </div>
+                <div class="group-members" id="groupMembersContainer">
+                    <div class="group-member">
+                        <input type="text" placeholder="Имя участника" class="member-name" value="Я">
+                        <div class="member-actions">
+                            <span class="member-events-count">0 событий</span>
+                            <button class="select-events-btn" data-member="0">Выбрать</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="control-button" id="addMemberBtn">Добавить участника</button>
+                    <button class="generate-btn" id="generateGroupBtn">Сгенерировать групповые маршруты</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора событий для участника -->
+    <div id="memberEventsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="memberModalTitle">Выбор событий для участника</h3>
+                <button class="close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="day-selector">
+                    <button class="day-btn active" data-day="1">День 1</button>
+                    <button class="day-btn" data-day="2">День 2</button>
+                    <button class="day-btn" data-day="3">День 3</button>
+                </div>
+                <div class="member-events-list" id="memberEventsList"></div>
+                <div class="modal-actions">
+                    <button class="generate-btn" id="saveMemberEventsBtn">Сохранить выбор</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Фестивальный планировщик &copy; 2023</p>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="algorithms.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
