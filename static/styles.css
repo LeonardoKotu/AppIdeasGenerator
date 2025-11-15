@@ -1,17 +1,18 @@
 /* style.css */
 @font-face {
     font-family: 'Krona One';
-    src: url('fonts/KronaOne-Regular.ttf') format('truetype');
+    src: url('/static/fonts/KronaOne-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Jura';
-    src: url('fonts/Jura.ttf') format('truetype');
+    src: url('/static/fonts/Jura.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
+
 
 * {
     margin: 0;
