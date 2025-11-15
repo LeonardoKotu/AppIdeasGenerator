@@ -5,42 +5,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const showRegister = document.getElementById('showRegister');
     const showLogin = document.getElementById('showLogin');
 
-    // Плавное переключение на форму регистрации
+    // Переключение на форму регистрации
     showRegister.addEventListener('click', function(e) {
         e.preventDefault();
-        loginForm.style.opacity = '0';
-        loginForm.style.transform = 'translateY(-20px)';
-        
-        setTimeout(() => {
-            loginForm.classList.add('hidden');
-            registerForm.classList.remove('hidden');
-            registerForm.style.opacity = '0';
-            registerForm.style.transform = 'translateY(20px)';
-            
-            setTimeout(() => {
-                registerForm.style.opacity = '1';
-                registerForm.style.transform = 'translateY(0)';
-            }, 50);
-        }, 400);
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
     });
 
-    // Плавное переключение на форму входа
+    // Переключение на форму входа
     showLogin.addEventListener('click', function(e) {
         e.preventDefault();
-        registerForm.style.opacity = '0';
-        registerForm.style.transform = 'translateY(-20px)';
-        
-        setTimeout(() => {
-            registerForm.classList.add('hidden');
-            loginForm.classList.remove('hidden');
-            loginForm.style.opacity = '0';
-            loginForm.style.transform = 'translateY(20px)';
-            
-            setTimeout(() => {
-                loginForm.style.opacity = '1';
-                loginForm.style.transform = 'translateY(0)';
-            }, 50);
-        }, 400);
+        registerForm.classList.add('hidden');
+        loginForm.classList.remove('hidden');
     });
 
     // Вход
@@ -70,20 +46,13 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = false;
             
             if (result.success) {
-                // Успешный вход - анимация
-                submitBtn.style.backgroundColor = '#27ae60';
-                submitBtn.textContent = 'Успешно!';
-                setTimeout(() => {
-                    alert(result.message);
-                    // Здесь можно сделать редирект
-                    // window.location.href = '/dashboard';
-                }, 500);
+                // Переходим на главную страницу
+                if (result.redirect) {
+                    window.location.href = result.redirect;
+                } else {
+                    window.location.href = '/main';
+                }
             } else {
-                // Ошибка - анимация дрожания
-                loginForm.classList.add('error');
-                setTimeout(() => {
-                    loginForm.classList.remove('error');
-                }, 400);
                 alert(result.message);
             }
         })
@@ -125,34 +94,13 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = false;
             
             if (result.success) {
-                // Успешная регистрация - анимация
-                submitBtn.style.backgroundColor = '#27ae60';
-                submitBtn.textContent = 'Успешно!';
-                setTimeout(() => {
-                    alert(result.message);
-                    // Автоматически переключаем на форму входа
-                    registerForm.style.opacity = '0';
-                    registerForm.style.transform = 'translateY(-20px)';
-                    
-                    setTimeout(() => {
-                        registerForm.classList.add('hidden');
-                        loginForm.classList.remove('hidden');
-                        loginForm.style.opacity = '0';
-                        loginForm.style.transform = 'translateY(20px)';
-                        
-                        setTimeout(() => {
-                            loginForm.style.opacity = '1';
-                            loginForm.style.transform = 'translateY(0)';
-                            submitBtn.style.backgroundColor = '';
-                        }, 50);
-                    }, 400);
-                }, 500);
+                // Переходим на главную страницу
+                if (result.redirect) {
+                    window.location.href = result.redirect;
+                } else {
+                    window.location.href = '/main';
+                }
             } else {
-                // Ошибка - анимация дрожания
-                registerForm.classList.add('error');
-                setTimeout(() => {
-                    registerForm.classList.remove('error');
-                }, 400);
                 alert(result.message);
             }
         })
@@ -162,9 +110,4 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Ошибка соединения');
         });
     });
-
-    // Добавляем анимацию при загрузке страницы
-    setTimeout(() => {
-        document.querySelector('.container').style.opacity = '1';
-    }, 100);
 });

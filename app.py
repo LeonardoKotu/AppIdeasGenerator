@@ -24,19 +24,29 @@ def home_page():
 def error_page():
     return render_template("/error_page.html")
 
+# Главная страница после входа
+@app.route("/main")
+def main_page():
+    return render_template("main.html")
+
 # Энпоинт: регистрация пользователя
 @app.route("/login", methods=['POST'])
 def login_reg():
     data = request.json
     
     username = data.get("username")
-#    password = data.get("password")
+    password = data.get("password")
 
-    # Используй функцию для проверки логина, а не регистрации
-    user = login_user(username)  # ← вот эту функцию нужно создать
+    # Используй функцию для проверки логина
+    user = login_user(username, password)  # ← передаем и логин и пароль
 
     if user:
-        return jsonify({"success": True, "message": "Вход выполнен успешно!"})    
+        # Возвращаем успех и URL для перехода
+        return jsonify({
+            "success": True, 
+            "message": "Вход выполнен успешно!",
+            "redirect": "/main"  # URL для перехода
+        })    
     else:
         return jsonify({"success": False, "message": "Неверный логин или пароль!"})
 
@@ -56,9 +66,13 @@ def register():
             return jsonify({'success': False, 'message': 'Пароли не совпадают'})
         
         if add_user(username, password):
-            return jsonify({'success': True, 'message': 'Регистрация успешна!'})
+            return jsonify({
+                'success': True, 
+                'message': 'Регистрация успешна!',
+                'redirect': '/main'  # После регистрации тоже переходим на главную
+            })
         else:
-            return jsonify({'success': False, 'message': 'Пользователь с таким email или логином уже существует'})
+            return jsonify({'success': False, 'message': 'Пользователь с таким логином уже существует'})
     
     except Exception as e:
         return jsonify({'success': False, 'message': f'Ошибка сервера: {str(e)}'})

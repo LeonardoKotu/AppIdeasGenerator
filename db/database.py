@@ -36,7 +36,7 @@ def add_user(username, password):
     return True
                        
 # выборка юзера
-def login_user(username):
+def login_user(username, password):
     
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
@@ -45,7 +45,7 @@ def login_user(username):
     Вытаскиваем пользователя из базы данных
     '''
 
-    cursor.execute("select * from Users where username = ?", (username, ))
+    cursor.execute("select * from Users where username = ? and password = ?", (username, password,  ))
     user = cursor.fetchone()
     conn.close()
 

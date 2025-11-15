@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Фестивальный планировщик</title>
-    <link rel="stylesheet" href="main_styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main_styles.css') }}">
+
 </head>
 <body>
     <!-- Переключатель темы -->
@@ -150,8 +151,11 @@
         </div>
     </footer>
 
-    <script src="data.js"></script>
+    <!-- <script src="data.js"></script>
     <script src="algorithms.js"></script>
-    <script src="app.js"></script>
+    <script src="app.js"></script> -->
+    <script src="{{ url_for('static', filename='data.js') }}"></script>
+    <script src="{{ url_for('static', filename='algorithms.js') }}"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
