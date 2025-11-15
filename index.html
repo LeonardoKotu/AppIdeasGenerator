@@ -3,26 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STIvent - Авторизация</title>
+    <title>Авторизация</title>
     <link rel="stylesheet" href="styles.css">
-
 </head>
 <body>
     <div class="container">
-        <div class="logo">STIvent</div>
-        <div class="auth-form">
+        <div class="logo">LOGO</div>
+        
+        <!-- Форма входа -->
+        <form class="auth-form" id="loginForm">
             <div class="form-group">
-                <input type="text" id="login" placeholder="login">
+                <input type="text" placeholder="Логин">
             </div>
             <div class="form-group">
-                <input type="password" id="password" placeholder="password">
+                <input type="password" placeholder="Пароль">
             </div>
             <div class="links">
                 <a href="#">Забыли пароль?</a>
-                <a href="#">Зарегистрироваться</a>
+                <a href="#" id="showRegister">Регистрация</a>
             </div>
-            <button>Войти</button>
-        </div>
+            <button type="submit">Войти</button>
+        </form>
+        
+        <!-- Форма регистрации -->
+        <form class="register-form hidden" id="registerForm">
+            <div class="form-group">
+                <input type="text" placeholder="Имя">
+            </div>
+            <div class="form-group">
+                <input type="text" placeholder="Фамилия">
+            </div>
+            <div class="form-group">
+                <input type="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Пароль">
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Повторите пароль">
+            </div>
+            <div class="register-links">
+                <a href="#" id="showLoginFromText">Уже есть аккаунт?</a>
+                <a href="#" id="showLogin">Войти</a>
+            </div>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

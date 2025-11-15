@@ -1,14 +1,14 @@
 /* style.css */
 @font-face {
     font-family: 'Krona One';
-    src: url('fonts/KronaOne-Regular.ttf') format('truetype');
+    src: url('KronaOne-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Jura';
-    src: url('fonts/Jura.ttf') format('truetype');
+    src: url('Jura-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -37,11 +37,9 @@ body {
 
 .logo {
     text-align: center;
-    font-size: 88px;
+    font-size: 52px;
     margin-bottom: 40px;
-    width: 120%;
-    margin-left: -10%;
-    color: #006AFF;
+    color: #2c3e50;
     font-family: 'Krona One', sans-serif;
     letter-spacing: 2px;
 }
@@ -52,6 +50,14 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     min-height: 350px;
+}
+
+.register-form {
+    background: white;
+    padding: 50px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-height: 400px;
 }
 
 .form-group {
@@ -84,9 +90,17 @@ input:focus {
     font-size: 14px;
 }
 
+.register-links {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
 a {
     color: #3498db;
     text-decoration: none;
+    cursor: pointer;
 }
 
 a:hover {
@@ -96,7 +110,7 @@ a:hover {
 button {
     width: 100%;
     padding: 14px;
-    background-color: #006AFF;
+    background-color: #2c3e50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -107,5 +121,9 @@ button {
 }
 
 button:hover {
-    background-color: #336798;
+    background-color: #1a252f;
+}
+
+.hidden {
+    display: none;
 }
