@@ -31,15 +31,20 @@
                     <div class="selected-count" id="selectedCount">0 событий</div>
                 </div>
                 
-                <div class="control-buttons">
-                    <button class="control-button" id="groupPlanBtn">
-                        Групповой режим
-                    </button>
-                    <button class="control-button" id="liveEditBtn">
-                        Режим фестиваля
-                    </button>
-                </div>
-                
+<!-- ЗАМЕНИ блок control-buttons на этот -->
+<div class="control-buttons">
+    <div class="toggle-switch-container">
+        <label class="toggle-label">Групповой режим</label>
+        <label class="toggle-switch">
+            <input type="checkbox" id="groupPlanToggle">
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+    <button class="control-button" id="liveEditBtn">
+        Режим фестиваля
+    </button>
+</div>
+
                 <div class="day-selector">
                     <button class="day-btn active" data-day="1">День 1</button>
                     <button class="day-btn" data-day="2">День 2</button>
@@ -97,7 +102,7 @@
     </div>
     
     <!-- Модальное окно группового планирования -->
-    <div id="groupModal" class="modal">
+    <div id="groupModal" class="modal" tabindex="-1" data-esc-close="true">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Групповое планирование</h3>
@@ -124,7 +129,7 @@
         </div>
     </div>
 
-    <div id="memberEventsModal" class="modal">
+    <div id="memberEventsModal" class="modal" tabindex="-1" data-esc-close="true">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="memberModalTitle">Выбор событий для участника</h3>
@@ -149,11 +154,10 @@
         </div>
     </footer>
 
-     <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
     <script src="{{ url_for('static', filename='data.js') }}"></script>
-    <script src="{{ url_for('static', filename='algorithms.js') }}"></script> 
+    <script src="{{ url_for('static', filename='algorithms.js') }}"></script>
 
-    
 
 </body>
 </html>

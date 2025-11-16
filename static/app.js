@@ -42,21 +42,29 @@ function initializeApp() {
     document.getElementById('saveMemberEventsBtn').addEventListener('click', saveMemberEvents);
     
     // Обработчики для закрытия модальных окон по крестикам
-    document.querySelectorAll('.close').forEach(closeBtn => {
-        closeBtn.addEventListener('click', function() {
-            const modal = this.closest('.modal');
-            if (modal) {
-                modal.classList.remove('show');
-            }
-        });
+document.querySelectorAll('.close').forEach(closeBtn => {
+    closeBtn.addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            closeModal(modal);
+        }
     });
-    
+});
+
     // Обновляем время каждую минуту в режиме фестиваля
     setInterval(updateCurrentTime, 60000);
     
     // Закрытие модальных окон при клике вне их
     setupModalCloseHandlers();
 }
+// Переключатель группового режима
+// В initializeApp() заменить обработчик:
+document.getElementById('groupPlanToggle').addEventListener('change', function() {
+    if (this.checked) {
+        openGroupModal();
+        // НЕ сбрасываем checked - переключатель остается активным пока модалка открыта
+    }
+});
 
 function setupModalCloseHandlers() {
     window.onclick = function(event) {
@@ -64,10 +72,10 @@ function setupModalCloseHandlers() {
         const memberModal = document.getElementById('memberEventsModal');
         
         if (event.target === groupModal) {
-            closeGroupModal();
+            closeModal(groupModal);
         }
         if (event.target === memberModal) {
-            closeMemberModal();
+            closeModal(memberModal);
         }
     }
 }
@@ -198,6 +206,20 @@ function openGroupModal() {
     renderGroupMembers();
 }
 
+
+function closeModal(modal) {
+    modal.classList.remove('show');
+    
+    // Сбрасываем переключатель группового режима при закрытии модалки
+    if (modal.id === 'groupModal') {
+        document.getElementById('groupPlanToggle').checked = false;
+    }
+    
+    // Сбрасываем переключатель при закрытии модалки участника
+    if (modal.id === 'memberEventsModal') {
+        currentMemberEditing = null;
+    }
+}
 function closeGroupModal() {
     document.getElementById('groupModal').classList.remove('show');
 }
@@ -251,6 +273,8 @@ function selectEventsForMember(memberIndex) {
     loadMemberEvents(currentDay);
     document.getElementById('memberEventsModal').classList.add('show');
 }
+
+
 
 function closeMemberModal() {
     document.getElementById('memberEventsModal').classList.remove('show');
@@ -647,7 +671,19 @@ function updateScheduleTabs() {
         scheduleTabs.appendChild(tab);
     });
 }
-
+// Обработчик ESC для модальных окон
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const groupModal = document.getElementById('groupModal');
+        const memberModal = document.getElementById('memberEventsModal');
+        
+        if (groupModal.classList.contains('show')) {
+            closeModal(groupModal);
+        } else if (memberModal.classList.contains('show')) {
+            closeModal(memberModal);
+        }
+    }
+});
 function displaySchedule(scheduleIndex) {
     const scheduleView = document.getElementById('scheduleView');
     scheduleView.innerHTML = '';
