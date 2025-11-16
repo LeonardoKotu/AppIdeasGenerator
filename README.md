@@ -70,7 +70,7 @@
 
 1.  **Клонируйте репозиторий:**
     ```bash
-    git clone https://github.com/your-username/eventflow.git](https://github.com/LeonardoKotu/AppIdeasGenerator.git
+    https://github.com/LeonardoKotu/AppIdeasGenerator.git
     cd AppIdeasGenerator
     ```
 
