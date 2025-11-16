@@ -32,9 +32,16 @@ function initializeApp() {
     document.getElementById('generateBtn').addEventListener('click', generateSchedules);
     document.getElementById('clearBtn').addEventListener('click', clearSelectedEvents);
     document.getElementById('searchInput').addEventListener('input', filterEvents);
-    document.getElementById('groupPlanBtn').addEventListener('click', toggleGroupPlanMode);
     document.getElementById('liveEditBtn').addEventListener('click', toggleLiveEditMode);
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    
+    // Переключатель группового режима
+    document.getElementById('groupPlanToggle').addEventListener('change', function() {
+        if (this.checked) {
+            openGroupModal();
+            // НЕ сбрасываем checked - переключатель остается активным пока модалка открыта
+        }
+    });
     
     // Модальные окна
     document.getElementById('addMemberBtn').addEventListener('click', addGroupMember);
@@ -42,31 +49,24 @@ function initializeApp() {
     document.getElementById('saveMemberEventsBtn').addEventListener('click', saveMemberEvents);
     
     // Обработчики для закрытия модальных окон по крестикам
-document.querySelectorAll('.close').forEach(closeBtn => {
-    closeBtn.addEventListener('click', function() {
-        const modal = this.closest('.modal');
-        if (modal) {
-            closeModal(modal);
-        }
+    document.querySelectorAll('.close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function() {
+            const modal = this.closest('.modal');
+            if (modal) {
+                closeModal(modal);
+            }
+        });
     });
-});
-
+    
     // Обновляем время каждую минуту в режиме фестиваля
     setInterval(updateCurrentTime, 60000);
     
-    // Закрытие модальных окон при клике вне их
+    // Закрытие модальных окон
     setupModalCloseHandlers();
 }
-// Переключатель группового режима
-// В initializeApp() заменить обработчик:
-document.getElementById('groupPlanToggle').addEventListener('change', function() {
-    if (this.checked) {
-        openGroupModal();
-        // НЕ сбрасываем checked - переключатель остается активным пока модалка открыта
-    }
-});
 
 function setupModalCloseHandlers() {
+    // Закрытие модальных окон при клике вне их
     window.onclick = function(event) {
         const groupModal = document.getElementById('groupModal');
         const memberModal = document.getElementById('memberEventsModal');
@@ -78,6 +78,20 @@ function setupModalCloseHandlers() {
             closeModal(memberModal);
         }
     }
+
+    // Обработчик ESC для модальных окон
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const groupModal = document.getElementById('groupModal');
+            const memberModal = document.getElementById('memberEventsModal');
+            
+            if (groupModal.classList.contains('show')) {
+                closeModal(groupModal);
+            } else if (memberModal.classList.contains('show')) {
+                closeModal(memberModal);
+            }
+        }
+    });
 }
 
 // === УПРАВЛЕНИЕ ТЕМОЙ ===
@@ -206,7 +220,6 @@ function openGroupModal() {
     renderGroupMembers();
 }
 
-
 function closeModal(modal) {
     modal.classList.remove('show');
     
@@ -219,9 +232,6 @@ function closeModal(modal) {
     if (modal.id === 'memberEventsModal') {
         currentMemberEditing = null;
     }
-}
-function closeGroupModal() {
-    document.getElementById('groupModal').classList.remove('show');
 }
 
 function renderGroupMembers() {
@@ -273,8 +283,6 @@ function selectEventsForMember(memberIndex) {
     loadMemberEvents(currentDay);
     document.getElementById('memberEventsModal').classList.add('show');
 }
-
-
 
 function closeMemberModal() {
     document.getElementById('memberEventsModal').classList.remove('show');
@@ -341,7 +349,7 @@ function updateMemberEventsCount(memberIndex) {
 
 function saveMemberEvents() {
     if (currentMemberEditing !== null) {
-        closeMemberModal();
+        closeModal(document.getElementById('memberEventsModal'));
         showNotification(`События для ${groupMembers[currentMemberEditing].name} сохранены!`, 'success');
     }
 }
@@ -373,7 +381,7 @@ function generateGroupSchedules() {
     updateSelectedCount();
     loadEventsForDay(currentDay);
     
-    closeGroupModal();
+    closeModal(document.getElementById('groupModal'));
     generateSchedules();
     
     showNotification(`Учтены события ${groupMembers.length} участников!`, 'success');
@@ -384,11 +392,9 @@ function generateGroupSchedules() {
 function toggleLiveEditMode() {
     isLiveEditMode = !isLiveEditMode;
     const liveEditBtn = document.getElementById('liveEditBtn');
-    const groupPlanBtn = document.getElementById('groupPlanBtn');
     
     if (isLiveEditMode) {
         liveEditBtn.classList.add('active');
-        groupPlanBtn.classList.remove('active');
         showLiveEditBanner();
         updateCurrentTime();
     } else {
@@ -402,22 +408,6 @@ function toggleLiveEditMode() {
     }
     
     showNotification(isLiveEditMode ? 'Режим фестиваля активирован' : 'Режим фестиваля деактивирован', 'success');
-}
-
-function toggleGroupPlanMode() {
-    const groupPlanBtn = document.getElementById('groupPlanBtn');
-    const liveEditBtn = document.getElementById('liveEditBtn');
-    
-    if (groupPlanBtn.classList.contains('active')) {
-        groupPlanBtn.classList.remove('active');
-        closeGroupModal();
-    } else {
-        groupPlanBtn.classList.add('active');
-        liveEditBtn.classList.remove('active');
-        isLiveEditMode = false;
-        hideLiveEditBanner();
-        openGroupModal();
-    }
 }
 
 function showLiveEditBanner() {
@@ -671,19 +661,7 @@ function updateScheduleTabs() {
         scheduleTabs.appendChild(tab);
     });
 }
-// Обработчик ESC для модальных окон
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        const groupModal = document.getElementById('groupModal');
-        const memberModal = document.getElementById('memberEventsModal');
-        
-        if (groupModal.classList.contains('show')) {
-            closeModal(groupModal);
-        } else if (memberModal.classList.contains('show')) {
-            closeModal(memberModal);
-        }
-    }
-});
+
 function displaySchedule(scheduleIndex) {
     const scheduleView = document.getElementById('scheduleView');
     scheduleView.innerHTML = '';
