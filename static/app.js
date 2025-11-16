@@ -7,6 +7,8 @@ let isLiveEditMode = false;
 let currentTime = new Date();
 let currentMemberEditing = null;
 let isDarkTheme = false;
+let notifications = [];
+let notificationCheckInterval = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
@@ -35,11 +37,16 @@ function initializeApp() {
     document.getElementById('liveEditBtn').addEventListener('click', toggleLiveEditMode);
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
     
+    // Новые обработчики для иконок в header
+    document.getElementById('notificationsBtn').addEventListener('click', showNotifications);
+    document.getElementById('settingsBtn').addEventListener('click', showSettings);
+    document.getElementById('helpBtn').addEventListener('click', showHelp);
+    document.getElementById('contactBtn').addEventListener('click', showContact);
+    
     // Переключатель группового режима
     document.getElementById('groupPlanToggle').addEventListener('change', function() {
         if (this.checked) {
             openGroupModal();
-            // НЕ сбрасываем checked - переключатель остается активным пока модалка открыта
         }
     });
     
@@ -61,6 +68,9 @@ function initializeApp() {
     // Обновляем время каждую минуту в режиме фестиваля
     setInterval(updateCurrentTime, 60000);
     
+    // Запускаем проверку уведомлений каждые 30 секунд
+    startNotificationChecker();
+    
     // Закрытие модальных окон
     setupModalCloseHandlers();
 }
@@ -68,9 +78,13 @@ function initializeApp() {
 function setupModalCloseHandlers() {
     // Закрытие модальных окон при клике вне их
     window.onclick = function(event) {
+        const notificationsModal = document.getElementById('notificationsModal');
         const groupModal = document.getElementById('groupModal');
         const memberModal = document.getElementById('memberEventsModal');
         
+        if (event.target === notificationsModal) {
+            closeModal(notificationsModal);
+        }
         if (event.target === groupModal) {
             closeModal(groupModal);
         }
@@ -82,16 +96,123 @@ function setupModalCloseHandlers() {
     // Обработчик ESC для модальных окон
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
+            const notificationsModal = document.getElementById('notificationsModal');
             const groupModal = document.getElementById('groupModal');
             const memberModal = document.getElementById('memberEventsModal');
             
-            if (groupModal.classList.contains('show')) {
+            if (notificationsModal.classList.contains('show')) {
+                closeModal(notificationsModal);
+            } else if (groupModal.classList.contains('show')) {
                 closeModal(groupModal);
             } else if (memberModal.classList.contains('show')) {
                 closeModal(memberModal);
             }
         }
     });
+}
+
+// === СИСТЕМА УВЕДОМЛЕНИЙ ===
+
+function startNotificationChecker() {
+    // Проверяем уведомления каждые 30 секунд
+    notificationCheckInterval = setInterval(checkForUpcomingEvents, 30000);
+    // Сразу делаем первую проверку
+    checkForUpcomingEvents();
+}
+
+function checkForUpcomingEvents() {
+    if (!isLiveEditMode || selectedEvents.length === 0) {
+        return;
+    }
+    
+    const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+    const upcomingEvents = [];
+    
+    selectedEvents.forEach(event => {
+        const eventStart = getTimeInMinutes(event.time.split('-')[0]);
+        const timeUntilEvent = eventStart - currentMinutes;
+        
+        // Если событие начинается через 5-15 минут
+        if (timeUntilEvent > 0 && timeUntilEvent <= 15) {
+            const urgency = timeUntilEvent <= 5 ? 'urgent' : 'upcoming';
+            upcomingEvents.push({
+                event: event,
+                minutesUntil: timeUntilEvent,
+                urgency: urgency
+            });
+        }
+    });
+    
+    // Обновляем уведомления
+    updateNotifications(upcomingEvents);
+}
+
+function updateNotifications(upcomingEvents) {
+    notifications = upcomingEvents;
+    updateNotificationBadge();
+    
+    // Показываем всплывающие уведомления для срочных событий
+    upcomingEvents.forEach(notification => {
+        if (notification.urgency === 'urgent' && notification.minutesUntil <= 5) {
+            showPopupNotification(notification);
+        }
+    });
+}
+
+function updateNotificationBadge() {
+    const badge = document.getElementById('notificationBadge');
+    if (notifications.length > 0) {
+        badge.textContent = notifications.length;
+        badge.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function showPopupNotification(notification) {
+    const event = notification.event;
+    const message = `Событие "${event.title}" начинается через ${notification.minutesUntil} минут!`;
+    
+    showNotification(message, 'warning');
+}
+
+function showNotifications() {
+    const modal = document.getElementById('notificationsModal');
+    const notificationsList = document.getElementById('notificationsList');
+    
+    if (notifications.length === 0) {
+        notificationsList.innerHTML = `
+            <div class="empty-notifications">
+                <div class="empty-icon">🔔</div>
+                <h4>Нет уведомлений</h4>
+                <p>Здесь будут появляться напоминания о событиях</p>
+            </div>
+        `;
+    } else {
+        notificationsList.innerHTML = '';
+        
+        notifications.forEach(notification => {
+            const event = notification.event;
+            const notificationElement = document.createElement('div');
+            notificationElement.className = `notification-item ${notification.urgency}`;
+            
+            const icon = notification.urgency === 'urgent' ? '⏰' : '🔔';
+            const urgencyText = notification.urgency === 'urgent' ? 'Скоро начинается!' : 'Скоро начнётся';
+            
+            notificationElement.innerHTML = `
+                <div class="notification-icon">${icon}</div>
+                <div class="notification-content">
+                    <div class="notification-title">${event.title}</div>
+                    <div class="notification-message">${urgencyText} - через ${notification.minutesUntil} минут</div>
+                    <div class="notification-time">${event.time} | ${event.location}</div>
+                </div>
+            `;
+            
+            notificationsList.appendChild(notificationElement);
+        });
+    }
+    
+    modal.classList.add('show');
 }
 
 // === УПРАВЛЕНИЕ ТЕМОЙ ===
@@ -128,6 +249,20 @@ function enableLightTheme() {
 
 function saveTheme() {
     localStorage.setItem('festivalPlannerTheme', isDarkTheme ? 'dark' : 'light');
+}
+
+// === НОВЫЕ ФУНКЦИИ ДЛЯ ИКОНОК В HEADER ===
+
+function showSettings() {
+    showNotification('Настройки будут доступны в следующей версии', 'info');
+}
+
+function showHelp() {
+    showNotification('Документация и помощь будут добавлены позже', 'info');
+}
+
+function showContact() {
+    showNotification('Связь с разработчиками: contact@example.com', 'info');
 }
 
 // === ОСНОВНЫЕ ФУНКЦИИ ===
@@ -397,9 +532,19 @@ function toggleLiveEditMode() {
         liveEditBtn.classList.add('active');
         showLiveEditBanner();
         updateCurrentTime();
+        // Запускаем проверку уведомлений при включении режима
+        startNotificationChecker();
     } else {
         liveEditBtn.classList.remove('active');
         hideLiveEditBanner();
+        // Останавливаем проверку уведомлений при выключении режима
+        if (notificationCheckInterval) {
+            clearInterval(notificationCheckInterval);
+            notificationCheckInterval = null;
+        }
+        // Очищаем уведомления
+        notifications = [];
+        updateNotificationBadge();
     }
     
     loadEventsForDay(currentDay);
@@ -445,6 +590,8 @@ function updateCurrentTime() {
         if (generatedSchedules.length > 0) {
             displaySchedule(currentScheduleIndex);
         }
+        // Проверяем уведомления при обновлении времени
+        checkForUpcomingEvents();
     }
 }
 
