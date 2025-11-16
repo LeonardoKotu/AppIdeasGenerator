@@ -60,55 +60,145 @@ body {
     padding: 24px;
 }
 
-/* Header */
-header {
-    background: var(--white);
-    border-bottom: 1px solid var(--gray-border);
-    padding: 24px 0;
-    margin-bottom: 32px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-h1 {
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--dark);
-    margin-bottom: 4px;
-}
-
-.subtitle {
-    font-size: 16px;
-    color: var(--gray);
-    font-weight: 400;
-}
-
-/* Theme Toggle */
+/* Theme Toggle - Sun/Moon Switch */
+/* Кнопка теперь относительная и находится внутри хедера */
 .theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+    position: relative; /* убрали fixed */
+    margin-left: auto;  /* сдвигаем вправо внутри контейнера */
+    display: flex;
+    align-items: center;
 }
 
 .theme-toggle-btn {
     background: var(--white);
     border: 1px solid var(--gray-border);
-    border-radius: 20px;
-    padding: 8px 16px;
+    border-radius: 25px;
+    padding: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: var(--dark);
+    justify-content: space-between;
+    width: 60px;
+    height: 32px;
+    position: relative;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .theme-toggle-btn:hover {
-    background: var(--gray-light);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.theme-toggle-btn::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 28px;
+    height: 28px;
+    background: var(--warning);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+[data-theme="dark"] .theme-toggle-btn::before {
+    transform: translateX(28px);
+    background: var(--primary);
+}
+
+.theme-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.theme-icon.sun {
+    color: #FFA500;
+}
+
+.theme-icon.moon {
+    color: #4C9AFF;
+}
+
+/* Enhanced Header */
+header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 30px 0 25px 0;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 20px rgba(0, 82, 204, 0.15);
+
+    position: relative;   /* ← ДОБАВЛЕНО */
+
+}
+
+
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Контейнер хедера для выравнивания заголовка и кнопки */
+header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* заголовок слева, кнопка справа */
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    max-width: 500px;
+    line-height: 1.5;
+}
+
+/* Header Stats */
+.header-stats {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 6px 12px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.stat-icon {
+    font-size: 16px;
+    opacity: 0.9;
 }
 
 /* Main Layout */
@@ -133,8 +223,21 @@ h1 {
     border: 1px solid var(--gray-border);
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
+    position: relative;
+}
+
+.events-panel::before,
+.schedule-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 12px 12px 0 0;
 }
 
 .panel-header {
@@ -164,20 +267,81 @@ h1 {
     color: var(--gray);
 }
 
+/* Toggle Switches */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--dark);
+    flex: 1;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--gray);
+    transition: .3s;
+    border-radius: 34px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: var(--success);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+}
+
 /* Control Buttons - Toggle Style */
 .control-buttons {
     display: flex;
     gap: 8px;
     margin-bottom: 20px;
     background: var(--gray-light);
-    border-radius: 8px;
-    padding: 4px;
+    border-radius: 10px;
+    padding: 6px;
     border: 1px solid var(--gray-border);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .control-button {
     flex: 1;
-    padding: 10px 16px;
+    padding: 12px 16px;
     font-size: 13px;
     display: flex;
     align-items: center;
@@ -185,9 +349,9 @@ h1 {
     background: transparent;
     color: var(--gray);
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     font-weight: 500;
     position: relative;
     overflow: hidden;
@@ -200,7 +364,7 @@ h1 {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
     transition: left 0.5s;
 }
 
@@ -210,7 +374,7 @@ h1 {
 
 .control-button:hover {
     color: var(--dark);
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .control-button.active {
@@ -225,9 +389,10 @@ h1 {
     display: flex;
     margin-bottom: 20px;
     border: 1px solid var(--gray-border);
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     background: var(--white);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .day-btn {
@@ -266,17 +431,18 @@ h1 {
     width: 100%;
     padding: 12px 16px;
     border: 1px solid var(--gray-border);
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 14px;
-    transition: border-color 0.15s ease;
+    transition: all 0.3s ease;
     background: var(--white);
     color: var(--dark);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .search-box input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 2px var(--primary-light);
+    box-shadow: 0 0 0 3px var(--primary-light), 0 2px 8px rgba(0, 82, 204, 0.1);
 }
 
 /* Events List */
@@ -288,17 +454,28 @@ h1 {
     margin-bottom: 20px;
 }
 
-.events-list::-webkit-scrollbar {
-    width: 6px;
+/* Custom Scrollbar */
+.events-list::-webkit-scrollbar,
+.member-events-list::-webkit-scrollbar {
+    width: 8px;
 }
 
-.events-list::-webkit-scrollbar-track {
+.events-list::-webkit-scrollbar-track,
+.member-events-list::-webkit-scrollbar-track {
     background: var(--gray-light);
+    border-radius: 4px;
 }
 
-.events-list::-webkit-scrollbar-thumb {
+.events-list::-webkit-scrollbar-thumb,
+.member-events-list::-webkit-scrollbar-thumb {
     background: var(--gray);
-    border-radius: 3px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.events-list::-webkit-scrollbar-thumb:hover,
+.member-events-list::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
 }
 
 .event-item {
@@ -418,39 +595,6 @@ h1 {
     color: var(--success);
 }
 
-/* Time Status Badges */
-.time-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    margin-left: 8px;
-    font-weight: 600;
-}
-
-.time-status.past {
-    background: var(--gray);
-    color: white;
-}
-
-.time-status.current {
-    background: var(--warning);
-    color: white;
-    animation: statusPulse 2s infinite;
-}
-
-.time-status.future {
-    background: var(--success);
-    color: white;
-}
-
-@keyframes statusPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
-
 /* Selected Events */
 .selected-events {
     margin-top: 24px;
@@ -531,22 +675,38 @@ h1 {
 
 /* Generate Button */
 .generate-btn {
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
     border: none;
     padding: 14px 24px;
     border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.3s ease;
     width: 100%;
-    font-weight: 500;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.generate-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.generate-btn:hover::before {
+    left: 100%;
 }
 
 .generate-btn:hover {
-    background: var(--primary-dark);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 82, 204, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 82, 204, 0.4);
 }
 
 .generate-btn:disabled {
@@ -560,21 +720,38 @@ h1 {
 .schedule-tabs {
     display: flex;
     margin-bottom: 24px;
-    border-bottom: 1px solid var(--gray-border);
+    border-bottom: 2px solid var(--gray-border);
     gap: 4px;
 }
 
 .schedule-tab {
-    padding: 12px 20px;
+    padding: 12px 24px;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
+    border-bottom: 3px solid transparent;
     font-weight: 500;
     color: var(--gray);
-    transition: all 0.15s ease;
+    transition: all 0.3s ease;
     font-size: 14px;
-    border-radius: 6px 6px 0 0;
+    border-radius: 8px 8px 0 0;
     background: none;
     border: none;
+    position: relative;
+}
+
+.schedule-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: var(--primary);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.schedule-tab:hover::after {
+    width: 80%;
 }
 
 .schedule-tab:hover {
@@ -584,8 +761,11 @@ h1 {
 
 .schedule-tab.active {
     color: var(--primary);
-    border-bottom-color: var(--primary);
-    background: var(--primary-light);
+    font-weight: 600;
+}
+
+.schedule-tab.active::after {
+    width: 100%;
 }
 
 /* Schedule View */
@@ -621,17 +801,19 @@ h1 {
 /* Enhanced Schedule Time States */
 .time-slot {
     display: flex;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     background: var(--white);
     border: 1px solid var(--gray-border);
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
-    transition: all 0.15s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .time-slot:hover {
     border-color: var(--primary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
 }
 
 .time-slot.past-slot {
@@ -798,11 +980,6 @@ h1 {
     gap: 8px;
 }
 
-.live-edit-banner h4::before {
-    content: '⏰';
-    font-size: 16px;
-}
-
 .live-edit-banner p {
     margin: 0;
     font-size: 13px;
@@ -824,11 +1001,6 @@ h1 {
 .schedule-day.current-day .schedule-day-title {
     color: var(--warning);
     border-bottom-color: var(--warning);
-}
-
-.schedule-day.current-day .schedule-day-title::before {
-    content: '🔥';
-    margin-right: 8px;
 }
 
 /* Footer */
@@ -905,7 +1077,7 @@ footer {
     border-radius: 12px;
     width: 90%;
     max-width: 500px;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     position: relative;
@@ -1032,9 +1204,13 @@ footer {
     gap: 12px;
 }
 
-/* Member Events Modal */
+/* Member Events Modal - Compact Layout */
+.member-events-modal .modal-content {
+    max-height: 85vh;
+}
+
 .member-events-list {
-    max-height: 400px;
+    max-height: 300px;
     overflow-y: auto;
     border: 1px solid var(--gray-border);
     border-radius: 8px;
@@ -1082,83 +1258,101 @@ footer {
     color: var(--gray);
 }
 
-/* Responsive */
+.member-events-actions {
+    position: sticky;
+    bottom: 0;
+    background: var(--white);
+    padding: 16px 0 0 0;
+    border-top: 1px solid var(--gray-border);
+    margin-top: 16px;
+}
+
+/* Dark theme adjustments for header */
+[data-theme="dark"] header {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .header-stats .stat-item {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* SVG Icons */
+.svg-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+/* Responsive improvements */
 @media (max-width: 768px) {
-    .container {
-        padding: 16px;
+    .theme-toggle {
+        position: relative; /* кнопка держится внутри header */
+
     }
+    
+.theme-toggle-btn {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 25px;
+    padding: 8px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 60px;
+    height: 32px;
+
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    /* ВАЖНО: убрано position: relative */
+}
+
     
     h1 {
-        font-size: 24px;
+        font-size: 26px;
+        text-align: center;
     }
     
-    .app-container {
-        gap: 20px;
+.subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    max-width: 500px;
+    line-height: 1.5;
+    display: block; /* ключевое свойство */
+    margin: 10px auto 0 auto; /* центрирует блок и добавляет отступ сверху */
+}
+    .header-stats {
+        justify-content: center;
     }
     
-    .events-panel,
-    .schedule-panel {
-        padding: 20px;
+    header {
+        padding: 25px 0 20px 0;
     }
     
-    .panel-header {
+    .header-stats {
+        gap: 10px;
+    }
+    
+    .stat-item {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+    
+    .toggle-container {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
     
-    .control-buttons {
-        flex-direction: column;
-        gap: 4px;
-    }
-    
-    .control-button {
-        padding: 12px 16px;
-    }
-    
-    .schedule-tabs {
-        flex-wrap: wrap;
-    }
-    
-    .schedule-tab {
-        padding: 10px 16px;
-        font-size: 13px;
-    }
-    
-    .time-slot {
-        flex-direction: column;
-    }
-    
-    .time-label {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--gray-border);
-    }
-    
-    .group-member {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .member-actions {
-        justify-content: space-between;
-        margin-top: 8px;
-    }
-    
-    .time-status {
-        font-size: 10px;
-        margin-left: 4px;
-    }
-    
-    .theme-toggle {
-        position: relative;
-        top: auto;
-        right: auto;
-        margin-bottom: 16px;
-    }
-    
-    .theme-toggle-btn {
-        width: 100%;
-        justify-content: center;
+    .member-events-modal .modal-content {
+        margin: 10% auto;
+        max-height: 80vh;
     }
 }

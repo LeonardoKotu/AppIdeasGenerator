@@ -94,13 +94,13 @@ function toggleTheme() {
 
 function enableDarkTheme() {
     document.documentElement.setAttribute('data-theme', 'dark');
-    document.getElementById('themeToggle').innerHTML = '<span class="theme-text">Светлая тема</span>';
+    document.getElementById('themeToggle').innerHTML = '<span class="theme-text"></span>';
     isDarkTheme = true;
 }
 
 function enableLightTheme() {
     document.documentElement.removeAttribute('data-theme');
-    document.getElementById('themeToggle').innerHTML = '<span class="theme-text">Тёмная тема</span>';
+    document.getElementById('themeToggle').innerHTML = '<span class="theme-text"></span>';
     isDarkTheme = false;
 }
 

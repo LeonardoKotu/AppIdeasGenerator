@@ -8,21 +8,21 @@
 
 </head>
 <body>
-    <!-- Переключатель темы -->
-    <div class="theme-toggle">
-        <button class="theme-toggle-btn" id="themeToggle">
-            <span class="theme-icon">🌙</span>
-            <span class="theme-text">Тёмная тема</span>
-        </button>
-    </div>
 
     <header>
         <div class="container">
             <h1>Фестивальный планировщик</h1>
-            <p class="subtitle">Оптимизируйте ваше время на фестивале</p>
+            <!-- <p class="subtitle">Оптимизируйте ваше время на фестивале</p> -->
+
+            <!-- Переключатель темы внутри хедера -->
+            <div class="theme-toggle">
+                <button class="theme-toggle-btn" id="themeToggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
         </div>
     </header>
-    
+
     <div class="container">
         <div class="app-container">
             <div class="events-panel">
@@ -124,7 +124,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно выбора событий для участника -->
     <div id="memberEventsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -147,15 +146,14 @@
 
     <footer>
         <div class="container">
-            <p>Фестивальный планировщик &copy; 2023</p>
         </div>
     </footer>
 
-    <!-- <script src="data.js"></script>
-    <script src="algorithms.js"></script>
-    <script src="app.js"></script> -->
+     <script src="{{ url_for('static', filename='app.js') }}"></script>
     <script src="{{ url_for('static', filename='data.js') }}"></script>
-    <script src="{{ url_for('static', filename='algorithms.js') }}"></script>
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script src="{{ url_for('static', filename='algorithms.js') }}"></script> 
+
+    
+
 </body>
 </html>
